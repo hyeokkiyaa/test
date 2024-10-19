@@ -1,0 +1,24 @@
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+.table-custom {
+    width: calc(100% - 10%); 
+    margin-left: 5%;
+    margin-right: 5%; 
+}
+
+
+@media (max-width: 768px) {
+    .table-custom {
+        width: 100%;
+        margin-left: 0; 
+        margin-right: 0; 
+    }
+}
+
+.bottom {
+    display: flex;
+    justify-content: flex-end;
+}
+
