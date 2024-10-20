@@ -1,0 +1,82 @@
+/* 타이틀 스타일 */
+.convert_title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+.convert_content {
+  padding-left : 100px;
+  padding-right: 100px;
+  padding-top: 40px;
+}
+
+/* 라벨 스타일 */
+.convert_label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 입력 상자 스타일 */
+.convert_input, .convert_select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* 변환 버튼 스타일 */
+.convert_button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.convert_button:hover {
+  background-color: #0056b3;
+}
+
+.converted_result {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .container {
+      width: 90%;
+      padding: 15px;
+  }
+
+  .convert_title {
+      font-size: 20px;
+  }
+
+  .convert_input, .convert_select {
+      padding: 8px;
+      font-size: 14px;
+  }
+
+  .convert_button {
+      padding: 10px;
+      font-size: 14px;
+  }
+}
