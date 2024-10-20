@@ -9,23 +9,24 @@ import { Pagination } from 'rsuite';
 import ModalComponent from '../UI/ModalComponent';
 import updateIcon from './update.svg';
 import deleteIcon from './delete.svg';
+import searchIcon from './search.svg';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+
 
 function Crud() {
-    const [titles, setTitles] = useState([]);
-    const [id, setId] = useState([]);
-    const [beforeCurrency, setBeforeCurrency] = useState([]);
-    const [beforeMoney, setBeforeMoney] = useState([]);
-    const [afterCurrency, setAfterCurrency] = useState([]);
-    const [afterMoney, setAfterMoney] = useState([]);
-    const [date, setDate] = useState([]);
+    const [originalData, setOriginalData] = useState([]); // 원본 데이터를 저장할 상태
+    const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터를 저장할 상태
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const location = useLocation();
-
+    const [modalShow, setModalShow] = useState(false);
     const [currentItem, setCurrentItem] = useState(null);
+
     const query = new URLSearchParams(location.search);
     const user_id = query.get('user_id');
-    const [modalShow, setModalShow] = useState(false);
 
     const fetchData = async () => {
         if (!user_id) {
@@ -35,13 +36,8 @@ function Crud() {
 
         try {
             const response = await axios.get(`https://6708bcb98e86a8d9e42fd4e3.mockapi.io/crud/${user_id}`);
-            setId(response.data.map(item => item.id));
-            setDate(response.data.map(item => item.date));
-            setTitles(response.data.map(item => item.title));
-            setBeforeCurrency(response.data.map(item => item.beforeCurrency));
-            setBeforeMoney(response.data.map(item => item.beforeMoney));
-            setAfterCurrency(response.data.map(item => item.afterCurrency));
-            setAfterMoney(response.data.map(item => item.afterMoney));
+            setOriginalData(response.data); // 원본 데이터를 저장
+            setFilteredData(response.data); // 초기에는 필터링되지 않은 전체 데이터를 표시
         } catch (error) {
             console.error('Error fetching titles:', error);
         }
@@ -60,34 +56,18 @@ function Crud() {
 
         try {
             await axios.delete(`https://6708bcb98e86a8d9e42fd4e3.mockapi.io/crud/${user_id}/${itemId}`);
-            setTitles(prevTitles => prevTitles.filter((_, index) => id[index] !== itemId));
-            setId(prevId => prevId.filter(existingId => existingId !== itemId));
-            setDate(prevDate => prevDate.filter((_, index) => id[index] !== itemId));
-            setBeforeCurrency(prevBeforeCurrency => prevBeforeCurrency.filter((_, index) => id[index] !== itemId));
-            setBeforeMoney(prevBeforeMoney => prevBeforeMoney.filter((_, index) => id[index] !== itemId));
-            setAfterCurrency(prevAfterCurrency => prevAfterCurrency.filter((_, index) => id[index] !== itemId));
-            setAfterMoney(prevAfterMoney => prevAfterMoney.filter((_, index) => id[index] !== itemId));
+            setOriginalData(prevData => prevData.filter(item => item.id !== itemId));
+            setFilteredData(prevData => prevData.filter(item => item.id !== itemId));
         } catch (error) {
             console.error('Error deleting item:', error);
         }
     };
 
     const handleUpdate = (itemId, index) => {
-        const currentItem = {
-            id: itemId,  // Ensure `id` is properly set
-            title: titles[index],
-            date: date[index],
-            beforeCurrency: beforeCurrency[index],
-            beforeMoney: beforeMoney[index],
-            afterCurrency: afterCurrency[index],
-            afterMoney: afterMoney[index]
-        };
-    
+        const currentItem = filteredData[index]; // 필터링된 데이터 기준으로 업데이트
         setCurrentItem(currentItem);
         setModalShow(true);
     };
-    
-
 
     useEffect(() => {
         if (user_id) {
@@ -95,14 +75,53 @@ function Crud() {
         }
     }, [user_id]);
 
+    const filtering = (event) => {
+        event.preventDefault();
+
+        const option = document.getElementById('filter-option').value;
+        const query = document.getElementById('search-input').value.toLowerCase();
+
+        let filteredTitles = [];
+
+        if (option === 'Title') {
+            filteredTitles = originalData.filter(item => item.title.toLowerCase().includes(query));
+        } else if (option === 'BeforeCurrency') {
+            filteredTitles = originalData.filter(item => item.beforeCurrency.toLowerCase().includes(query));
+        } else if (option === 'AfterCurrency') {
+            filteredTitles = originalData.filter(item => item.afterCurrency.toLowerCase().includes(query));
+        }
+
+        setFilteredData(filteredTitles);
+        setPage(1); // 필터링 후 페이지를 첫 번째 페이지로 설정
+    }
+
     const startIndex = (page - 1) * limit;
-    const paginatedTitles = titles.slice(startIndex, startIndex + limit);
-    const totalPages = Math.ceil(titles.length / limit);
+    const paginatedTitles = filteredData.slice(startIndex, startIndex + limit);
+    const totalPages = Math.ceil(filteredData.length / limit);
 
     return (
         <div className='bg-color' style={{ minHeight: '100vh' }}>
             <Navbar />
-            <Table striped bordered className="table-custom">
+            <Form className='search bottom' onSubmit={filtering}>
+                <Row>
+                    <Col className='drop-down'>
+                        <Form.Select id="filter-option" defaultValue="Title">
+                            <option value="Title">Title</option>
+                            <option value="BeforeCurrency">Before Currency</option>
+                            <option value="AfterCurrency">After Currency</option>
+                        </Form.Select>
+                    </Col>
+                    <Col xs>
+                        <Form.Control id="search-input" placeholder="Search..." />
+                    </Col>
+                    <Col>
+                        <Button variant="white" type="submit">
+                            <img src={searchIcon} alt="search" style={{ width: '20px', height: '20px' }} />
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+            <Table striped bordered className="table-custom table-responsive width">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -117,21 +136,21 @@ function Crud() {
                 </thead>
                 <tbody>
                     {paginatedTitles.length > 0 ? (
-                        paginatedTitles.map((title, index) => (
-                            <tr key={index}>
+                        paginatedTitles.map((item, index) => (
+                            <tr key={item.id}>
                                 <td>{startIndex + index + 1}</td>
-                                <td>{title}</td>
-                                <td>{date[startIndex + index]}</td>
-                                <td>{beforeCurrency[startIndex + index]}</td>
-                                <td>{beforeMoney[startIndex + index]}</td>
-                                <td>{afterCurrency[startIndex + index]}</td>
-                                <td>{afterMoney[startIndex + index]}</td>
+                                <td>{item.title}</td>
+                                <td>{item.date}</td>
+                                <td className='currency'>{item.beforeCurrency}</td>
+                                <td>{item.beforeMoney}</td>
+                                <td>{item.afterCurrency}</td>
+                                <td>{item.afterMoney}</td>
                                 <td>
-                                    <button onClick={() => handleUpdate(id[startIndex + index], startIndex + index)} style={{ border: 'none', background: 'none' }}>
+                                    <button onClick={() => handleUpdate(item.id, startIndex + index)} style={{ border: 'none', background: 'none' }}>
                                         <img src={updateIcon} alt="Update" style={{ width: '20px', height: '20px' }} />
                                     </button>
 
-                                    <button onClick={() => handleDelete(id[startIndex + index])} style={{ border: 'none', background: 'none' }}>
+                                    <button onClick={() => handleDelete(item.id)} style={{ border: 'none', background: 'none' }}>
                                         <img src={deleteIcon} alt="Delete" style={{ width: '20px', height: '20px' }} />
                                     </button>
                                 </td>
@@ -155,7 +174,7 @@ function Crud() {
                     boundaryLinks
                     maxButtons={5}
                     size="xs"
-                    total={titles.length}
+                    total={filteredData.length}
                     limitOptions={[10, 30, 50]}
                     limit={limit}
                     activePage={page}
@@ -167,12 +186,12 @@ function Crud() {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 currentItem={currentItem}
-                user_id={user_id} // Pass the user_id to ModalComponent
-                fetchData={fetchData} // Pass the fetchData function to refresh data after update
+                user_id={user_id}
+                fetchData={fetchData}
             />
-
         </div>
     );
 }
 
 export default Crud;
+

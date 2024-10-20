@@ -1,35 +1,25 @@
 import React from "react";
-import { Link, useLoaderData, useLocation } from "react-router-dom";
-import { Dropdown, Collapse, initMDB } from "mdb-ui-kit";
+import { Link, useLocation } from "react-router-dom";
+import { Dropdown, initMDB } from "mdb-ui-kit";
 import "mdb-ui-kit/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import { useUser } from '../UserContext';  
 import logo from '../login/logo.svg';
 
-initMDB({ Dropdown, Collapse });
+initMDB({ Dropdown });
 
 const Header = () => {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
     const user_id = query.get('user_id');
-    console.log('User ID:', user_id); // test print user_id
+    console.log('User ID:', user_id); 
+
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-body-tertiary">
             <div className="container-fluid">
-                <button
-                    data-mdb-collapse-init
-                    className="navbar-toggler"
-                    type="button"
-                    data-mdb-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <i className="fas fa-bars"></i>
-                </button>
-
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            
+                
+                <div className="navbar-collapse" id="navbarSupportedContent">
                     <img
                         src={logo}
                         className="re-size"
@@ -45,7 +35,7 @@ const Header = () => {
                             <Link className="nav-link" to={`/content/Convert?user_id=${user_id}`}>Converter</Link>
                         </li>
                         <li className="nav-item">
-                        <Link className="nav-link" to={`/content/TransferList?user_id=${user_id}`}>Transfer List</Link>
+                            <Link className="nav-link" to={`/content/TransferList?user_id=${user_id}`}>Transfer List</Link>
                         </li>
                     </ul>
                 </div>
