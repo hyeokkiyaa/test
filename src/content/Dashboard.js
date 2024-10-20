@@ -23,7 +23,7 @@ const Dashboard = () => {
     const getTodayDateMinusOne = () => {
         const today = new Date();
         today.setDate(today.getDate() - 1);
-        return today.toISOString().split('T')[0]; 
+        return today.toISOString().split('T')[0];
     };
 
     const fetchCurrencies = async () => {
@@ -52,7 +52,7 @@ const Dashboard = () => {
         const dateArray = [];
         const rateArray = [];
         let currentDate = new Date(startDate);
-        const todayDate = new Date(getTodayDateMinusOne()); 
+        const todayDate = new Date(getTodayDateMinusOne());
 
         while (currentDate <= todayDate) {
             const formattedDate = currentDate.toISOString().split('T')[0];
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
             if (ratesForDate && ratesForDate[targetCurrency]) {
                 dateArray.push(formattedDate);
-                rateArray.push(ratesForDate[targetCurrency]); 
+                rateArray.push(ratesForDate[targetCurrency]);
             }
 
             currentDate.setDate(currentDate.getDate() + 1);
@@ -81,7 +81,7 @@ const Dashboard = () => {
         };
 
         fetchRatesBase();
-        fetchHistoricalData(); 
+        fetchHistoricalData();
     }, [baseCurrency]);
 
     useEffect(() => {
@@ -134,8 +134,8 @@ const Dashboard = () => {
     return (
         <div className='bg-color' style={{ minHeight: '100vh' }}>
             <Navbar />
-            <h2>Currency Converter & Exchange Rate Graph</h2>
-            <div className='currency-picker'>
+            <h2 className='font-size'>Currency Converter & Exchange Rate Graph</h2>
+            <div className="currency-picker">
                 <label>Base Currency: </label>
                 <select
                     value={baseCurrency}
@@ -147,7 +147,7 @@ const Dashboard = () => {
                         </option>
                     ))}
                 </select>
-
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>Target Currency: </label>
                 <select
                     value={targetCurrency}
@@ -161,13 +161,18 @@ const Dashboard = () => {
                 </select>
             </div>
 
+
             <div className='convert_content'>
-                <label>Amount in {baseCurrency.toUpperCase()}: </label>
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
+                <label className='currency-picker'>Amount in {baseCurrency.toUpperCase()}: </label>
+                <div className="input-wrapper">
+                    <input
+                        className='make-center'
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                    />
+                </div>
+                
                 {convertedAmount && (
                     <div className="converted_result">
                         <h3>{amount} {baseCurrency.toUpperCase()} = {convertedAmount} {targetCurrency.toUpperCase()}</h3>
