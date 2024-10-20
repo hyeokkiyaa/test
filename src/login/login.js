@@ -49,7 +49,7 @@ function Login() {
           // On successful login, navigate to content page
           setUserID(user.user_id);
           console.log('Login successful:', user);
-          navigate(`/content/TransferList?user_id=${user.user_id}`);
+          navigate(`/content/Dashboard?user_id=${user.user_id}`);
         } else {
           // Show password error message
           console.error('Invalid password');
