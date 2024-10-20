@@ -33,3 +33,7 @@
   - update를 Modal해서 생성 완료...
   - data 연동해서 update하는 부분 modal로 하려는 많이 힘들었습니다!!
   - 제목만 변경 가능하고, 나머지는readOnly로 읽기만 설정 완료
+ - User info 완성
+
+ 10/20 오전
+  - filter 부분 완성 (drop down 기준으로 내용이 포함 되있으면 가능)

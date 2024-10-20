@@ -17,8 +17,8 @@ import Row from 'react-bootstrap/Row';
 
 
 function Crud() {
-    const [originalData, setOriginalData] = useState([]); // 원본 데이터를 저장할 상태
-    const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터를 저장할 상태
+    const [originalData, setOriginalData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const location = useLocation();
@@ -36,8 +36,8 @@ function Crud() {
 
         try {
             const response = await axios.get(`https://6708bcb98e86a8d9e42fd4e3.mockapi.io/crud/${user_id}`);
-            setOriginalData(response.data); // 원본 데이터를 저장
-            setFilteredData(response.data); // 초기에는 필터링되지 않은 전체 데이터를 표시
+            setOriginalData(response.data);
+            setFilteredData(response.data);
         } catch (error) {
             console.error('Error fetching titles:', error);
         }
@@ -64,7 +64,7 @@ function Crud() {
     };
 
     const handleUpdate = (itemId, index) => {
-        const currentItem = filteredData[index]; // 필터링된 데이터 기준으로 업데이트
+        const currentItem = filteredData[index];
         setCurrentItem(currentItem);
         setModalShow(true);
     };
@@ -92,7 +92,7 @@ function Crud() {
         }
 
         setFilteredData(filteredTitles);
-        setPage(1); // 필터링 후 페이지를 첫 번째 페이지로 설정
+        setPage(1);
     }
 
     const startIndex = (page - 1) * limit;
