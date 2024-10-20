@@ -25,6 +25,15 @@ function UserInfo() {
     const query = new URLSearchParams(location.search);
     const user_id = query.get('user_id');
 
+    const fieldNames = {
+        name: 'Name',
+        age: 'Age',
+        email: 'Email',
+        phone_number: 'Phone Number',
+        account_number: 'Bank Account'
+
+    };
+
     const fetchData = async () => {
         if (!user_id) {
             console.warn('No user ID provided');
@@ -77,7 +86,7 @@ function UserInfo() {
                                         style={{ width: '150px' }}
                                         fluid />
                                     <p className="text-muted mb-1">{user_id}</p>
-                                  
+
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>
@@ -91,12 +100,12 @@ function UserInfo() {
                                         <MDBCardText className="text-danger">{error}</MDBCardText>
                                     ) : (
                                         <MDBRow>
-                                            <h1>Status of Asset</h1>
+                                            <h1>User Information</h1>
                                             {codes.map((code) => (
                                                 <MDBCol sm="6" key={code.code}>
                                                     <MDBCard className="mb-3">
                                                         <MDBCardBody>
-                                                            <MDBCardText className="fw-bold">{code.code}</MDBCardText>
+                                                            <MDBCardText className="fw-bold">{fieldNames[code.code] || code.code}</MDBCardText>
                                                             <MDBCardText className="text-muted">{code.value}</MDBCardText>
                                                         </MDBCardBody>
                                                     </MDBCard>

@@ -11,7 +11,7 @@ const Convert = () => {
     const [targetCurrency, setTargetCurrency] = useState('usd');
     const [convertedAmount, setConvertedAmount] = useState(null);
 
-    const excludedCurrencies = ['1000sats', '1inch', 'doge']; 
+    const allowedCurrencies = ['krw', 'usd', 'eur', 'afn', 'cny', 'jpy', 'chf', 'itl', 'rub', 'brl', 'frf', 'mxn', 'nok', 'sgd', 'aud', 'bef'];
 
     useEffect(() => {
         const fetchCurrencies = async () => {
@@ -19,7 +19,7 @@ const Convert = () => {
                 const response = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json');
                 const data = await response.json();
                 const filteredCurrencies = Object.keys(data).filter(
-                    (currency) => !excludedCurrencies.includes(currency)
+                    (currency) => allowedCurrencies.includes(currency)
                 );
                 setCurrencies(filteredCurrencies);
             } catch (error) {
@@ -35,7 +35,12 @@ const Convert = () => {
             try {
                 const response = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${baseCurrency}.json`);
                 const data = await response.json();
-                setRates(data[baseCurrency]);
+                const filteredRates = Object.fromEntries(
+                    Object.entries(data[baseCurrency]).filter(
+                        ([currency]) => allowedCurrencies.includes(currency)
+                    )
+                );
+                setRates(filteredRates);
             } catch (error) {
                 console.error('Error fetching exchange rates:', error);
             }
@@ -44,8 +49,7 @@ const Convert = () => {
         fetchRates();
     }, [baseCurrency]);
 
-    // 금액 변환 함수
-    const convertCurrency = () => {
+    useEffect(() => {
         if (rates[targetCurrency]) {
             const rate = rates[targetCurrency];
             const result = (amount * rate).toFixed(3);
@@ -53,7 +57,7 @@ const Convert = () => {
         } else {
             setConvertedAmount('해당 통화는 지원되지 않습니다.');
         }
-    };
+    }, [baseCurrency, targetCurrency, amount, rates]);
 
     return (
         <div className='bg-color' style={{ minHeight: '100vh' }}>
@@ -101,18 +105,14 @@ const Convert = () => {
                     </select>
                 </div>
 
-                {convertedAmount && (
-                    <div className="converted_result">
-                        <h3>{convertedAmount} {targetCurrency.toUpperCase()}</h3>
-                    </div>
-                )}
+                <div className="converted_result">
+                    <h3>{convertedAmount} {targetCurrency.toUpperCase()}</h3>
+                </div>
 
                 <div>
                     <label className='convert_label'>Title</label>
-                    <input type='text' className='convert_input'></input>
+                    <textarea className='convert_input'></textarea>
                 </div>
-
-                <button onClick={convertCurrency} className='convert_button'>Convert</button>
             </div>
         </div>
     );

@@ -18,7 +18,7 @@ const Dashboard = () => {
     const [amount, setAmount] = useState(1000);
     const [convertedAmount, setConvertedAmount] = useState(null);
 
-    const allowedCurrencies = ['krw', 'usd', 'eur', 'afn'];
+    const allowedCurrencies = ['krw', 'usd', 'eur', 'afn', 'cny', 'jpy', 'chf', 'itl', 'rub', 'brl', 'frf', 'mxn', 'nok', 'sgd', 'aud', 'bef'];
 
     const getTodayDateMinusOne = () => {
         const today = new Date();
