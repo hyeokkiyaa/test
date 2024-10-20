@@ -15,3 +15,5 @@ login id/password
 CRUD 데이터 항목
     등록 번호, 내역 제목, 날짜, 기준 통화, 기준 통화 금액, 변환된 통화, 변환된 통화 금액, 사용자 id (숨겨져 있음)
 
+netlify link
+    https://compasscurrency.netlify.app/ 
