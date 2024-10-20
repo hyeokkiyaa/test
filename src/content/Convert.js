@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../UI/Navbar';
 import '../UI/All.css';
 import './Convert.css';
 
 const Convert = () => {
+    const location = useLocation();
     const [rates, setRates] = useState({});
     const [currencies, setCurrencies] = useState([]);
     const [amount, setAmount] = useState(1000);
     const [baseCurrency, setBaseCurrency] = useState('eur');
     const [targetCurrency, setTargetCurrency] = useState('usd');
     const [convertedAmount, setConvertedAmount] = useState(null);
+    const [title, setTitle] = useState('');
+
+    const query = new URLSearchParams(location.search);
+    const user_id = query.get('user_id');
 
     const allowedCurrencies = ['krw', 'usd', 'eur', 'afn', 'cny', 'jpy', 'chf', 'itl', 'rub', 'brl', 'frf', 'mxn', 'nok', 'sgd', 'aud', 'bef'];
 
@@ -59,6 +65,42 @@ const Convert = () => {
         }
     }, [baseCurrency, targetCurrency, amount, rates]);
 
+    const addTransferList = async () => {
+        const transferData = {
+            user_id: user_id,
+            title: title,
+            beforeCurrency: baseCurrency.toUpperCase(),
+            beforeMoney: amount,
+            afterCurrency: targetCurrency.toUpperCase(),
+            afterMoney: convertedAmount,
+            id: Date.now().toString(),
+            date: new Date().toISOString().split('T')[0] 
+        };
+
+        try {
+            const response = await fetch('https://6708bcb98e86a8d9e42fd4e3.mockapi.io/crud/example_id/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(transferData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Data saved successfully:', data);
+                alert('Data saved successfully!');
+                setTitle('');
+            } else {
+                console.error('Failed to save data:', response.statusText);
+                alert('Failed to save data.');
+            }
+        } catch (error) {
+            console.error('Error saving data:', error);
+            alert('Error occurred while saving data.');
+        }
+    };
+
     return (
         <div className='bg-color' style={{ minHeight: '100vh' }}>
             <Navbar />
@@ -105,14 +147,21 @@ const Convert = () => {
                     </select>
                 </div>
 
+                <label className='convert_label'>Amount in {targetCurrency.toUpperCase()}: </label>  
                 <div className="converted_result">
                     <h3>{convertedAmount} {targetCurrency.toUpperCase()}</h3>
                 </div>
 
                 <div>
                     <label className='convert_label'>Title</label>
-                    <textarea className='convert_input'></textarea>
+                    <textarea
+                        className='convert_input'
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
                 </div>
+
+                <button className="convert_button" onClick={addTransferList}>Convert</button>
             </div>
         </div>
     );
